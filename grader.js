@@ -42,10 +42,6 @@ var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
 };
 
-//var cheerioUrlFile = function(urlfile) {
-//    return cheerio.load(rest.get(urlfile).on('comlete', checkHtmlFile));
-//};
-
 var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
@@ -67,17 +63,27 @@ var clone = function(fn) {
     return fn.bind({});
 };
 
+
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
         .option('-u, --url <html_url>', 'URL of html file', clone(assertFileExists), HTMLFILE_DEFAULT)
         .parse(process.argv);
-    //var file = program.file;
-    //rest.get(program.url).on('complete', );
+    
     var checkJson = checkHtmlFile(program.file, program.checks);
     var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+
+    if(program.url) {
+	rest.get(program.url).on('complete', function(result) {
+	    fs.writeFileSync("tmp.html", result);
+	    program.file = "tmp.html";
+	    console.log(outJson)}
+	);
+    } else {
+	console.log(outJson);
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
+    exports.checkUrlFile = checkUrlfile;
 }
