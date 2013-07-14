@@ -68,7 +68,7 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <html_url>', 'URL of html file', clone(assertFileExists), HTMLFILE_DEFAULT)
+        .option('-u, --url <html_url>', 'URL of html file',  HTMLFILE_DEFAULT)
         .parse(process.argv);
     
     var checkJson = checkHtmlFile(program.file, program.checks);
